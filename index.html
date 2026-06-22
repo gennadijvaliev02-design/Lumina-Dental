@@ -1029,16 +1029,50 @@
                     }
                     
                     // Proceed
-                    setTimeout(() => {
-                        this.bookingStep = 5;
-                        this.$nextTick(() => lucide.createIcons());
-                        if (window.Telegram && window.Telegram.WebApp) {
-                            window.Telegram.WebApp.sendData(JSON.stringify({
-                                action: 'booking',
-                                data: { ...this.bookingData, date: this.formatDate(this.selectedDate) }
-                            }));
-                        }
-                    }, 300);
+                   setTimeout(async () => {
+
+    try {
+
+        const payload = {
+            chat_id: 777,
+            name: this.bookingData.name,
+            phone: this.bookingData.phone,
+            service: this.bookingData.service,
+            doctor: this.bookingData.doctor,
+            date: this.formatDate(this.selectedDate),
+            time: this.bookingData.time
+        };
+
+        const response = await fetch(
+            'https://anxietycoach.online/webhook/dental-booking',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        const result = await response.json();
+
+        console.log('Webhook result:', result);
+
+        this.bookingStep = 5;
+        this.$nextTick(() => lucide.createIcons());
+
+    } catch (error) {
+
+        console.error(error);
+
+        this.bookingError =
+            this.lang === 'ru'
+                ? 'Ошибка записи'
+                : 'Booking failed';
+
+    }
+
+}, 300);
                 },
 
                 addToCalendar() {
