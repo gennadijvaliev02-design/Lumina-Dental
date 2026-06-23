@@ -1039,7 +1039,7 @@
             phone: this.bookingData.phone,
             service: this.bookingData.service,
             doctor: this.bookingData.doctor,
-            date: this.formatDate(this.selectedDate),
+            date: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : '',
             time: this.bookingData.time
         };
 
